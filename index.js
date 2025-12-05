@@ -28,21 +28,34 @@ async function run() {
         const listingCollection = db.collection("listing");
 
         app.post("/listing", async (req, res) => {
-            console.log("Client hit the listing server");
             const newProduct = req.body;
             const result = await listingCollection.insertOne(newProduct);
             res.send(result);
         })
         app.get("/listing", async (req, res) => {
-            console.log("all products reading!");
-            const {email} = req.query;
-            console.log(email);
+            const { email } = req.query;
             const query = {};
             if (email) {
                 query.email = email;
             }
             const cursor = listingCollection.find(query);
             const result = await cursor.toArray();
+            res.send(result);
+        })
+        app.patch("/listing/:id", async (req, res) => {
+            const { email } = req.query;
+            const query = {};
+            if (email) {
+                query.email = email;
+            }
+            const result = listingCollection.deleteOne(query);
+            res.send(result);
+        })
+        app.delete("/listing/:id", async (req, res) => {
+            const { id } = req.params;
+            console.log(id);
+            const query = { _id: new ObjectId(id)}
+            const result = await listingCollection.deleteOne(query);
             res.send(result);
         })
 
