@@ -33,19 +33,21 @@ async function run() {
             const result = await listingCollection.insertOne(newProduct);
             res.send(result);
         })
-        app.post("/orders", async (req, res) => {
-            const newProduct = req.body;
-            const result = await ordersCollection.insertOne(newProduct);
+                app.patch("/listing/:id", async (req, res) => {
+            const updateData = req.query;
+            const id = req.params;
+            const query = { _id: new ObjectId(id)};
+            const updateDoc = {
+                $set: updateData
+            }
+            const result = await listingCollection.updateOne(query, updateDoc);
             res.send(result);
         })
-        app.get("/orders", async (req, res) => {
-            const { email } = req.query;
-            const query = {};
-            if (email) {
-                query.email = email;
-            }
-            const cursor = ordersCollection.find(query);
-            const result = await cursor.toArray();
+        app.delete("/listing/:id", async (req, res) => {
+            const { id } = req.params;
+            console.log(id);
+            const query = { _id: new ObjectId(id)}
+            const result = await listingCollection.deleteOne(query);
             res.send(result);
         })
         app.get("/listing", async (req, res) => {
@@ -74,23 +76,22 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         })
-        app.patch("/listing/:id", async (req, res) => {
-            const updateData = req.query;
-            const id = req.params;
-            const query = { _id: new ObjectId(id)};
-            const updateDoc = {
-                $set: updateData
+        app.post("/orders", async (req, res) => {
+            const newProduct = req.body;
+            const result = await ordersCollection.insertOne(newProduct);
+            res.send(result);
+        })
+        app.get("/orders", async (req, res) => {
+            const { email } = req.query;
+            const query = {};
+            if (email) {
+                query.email = email;
             }
-            const result = await listingCollection.updateOne(query, updateDoc);
+            const cursor = ordersCollection.find(query);
+            const result = await cursor.toArray();
             res.send(result);
         })
-        app.delete("/listing/:id", async (req, res) => {
-            const { id } = req.params;
-            console.log(id);
-            const query = { _id: new ObjectId(id)}
-            const result = await listingCollection.deleteOne(query);
-            res.send(result);
-        })
+
 
 
         await client.db("admin").command({ ping: 1 });
