@@ -42,6 +42,16 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         })
+        app.get("/category-filtered-product/:category", async (req, res) => {
+            const { category } = req.params;
+            const query = {};
+            if (category) {
+                query.category = category;
+            }
+            const cursor = listingCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        })
         app.patch("/listing/:id", async (req, res) => {
             const updateData = req.query;
             const id = req.params;
