@@ -26,10 +26,26 @@ async function run() {
 
         const db = client.db("PawMart");
         const listingCollection = db.collection("listing");
+        const ordersCollection = db.collection("orders");
 
         app.post("/listing", async (req, res) => {
             const newProduct = req.body;
             const result = await listingCollection.insertOne(newProduct);
+            res.send(result);
+        })
+        app.post("/orders", async (req, res) => {
+            const newProduct = req.body;
+            const result = await ordersCollection.insertOne(newProduct);
+            res.send(result);
+        })
+        app.get("/orders", async (req, res) => {
+            const { email } = req.query;
+            const query = {};
+            if (email) {
+                query.email = email;
+            }
+            const cursor = ordersCollection.find(query);
+            const result = await cursor.toArray();
             res.send(result);
         })
         app.get("/listing", async (req, res) => {
