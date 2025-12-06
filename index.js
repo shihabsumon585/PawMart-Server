@@ -42,6 +42,12 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         })
+        app.get("/listing/:id", async (req, res) => {
+            const { id } = req.params;
+            const query = { _id: new ObjectId(id) };
+            const result = await listingCollection.findOne(query);
+            res.send(result);
+        })
         app.get("/category-filtered-product/:category", async (req, res) => {
             const { category } = req.params;
             const query = {};
