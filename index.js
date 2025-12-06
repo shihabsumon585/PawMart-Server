@@ -43,12 +43,13 @@ async function run() {
             res.send(result);
         })
         app.patch("/listing/:id", async (req, res) => {
-            const { email } = req.query;
-            const query = {};
-            if (email) {
-                query.email = email;
+            const updateData = req.query;
+            const id = req.params;
+            const query = { _id: new ObjectId(id)};
+            const updateDoc = {
+                $set: updateData
             }
-            const result = listingCollection.deleteOne(query);
+            const result = await listingCollection.updateOne(query, updateDoc);
             res.send(result);
         })
         app.delete("/listing/:id", async (req, res) => {
@@ -58,8 +59,6 @@ async function run() {
             const result = await listingCollection.deleteOne(query);
             res.send(result);
         })
-
-
 
 
         await client.db("admin").command({ ping: 1 });
